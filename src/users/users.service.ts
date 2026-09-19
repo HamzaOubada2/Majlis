@@ -13,11 +13,14 @@ export class UsersService {
 
     async create(registerDto: RegisterDto): Promise<User> {
         const existingUser = await this.findByEmail(registerDto.email);
-        if(!existingUser) {
+        if(existingUser) {
             throw new ConflictException('Email is Already in use')
         }
 
-        const user = this.usersRepository.create(registerDto);
+        const user = this.usersRepository.create({
+            ...registerDto,
+            fullname: registerDto.fullName,
+        });
         return await this.usersRepository.save(user);
     }
 

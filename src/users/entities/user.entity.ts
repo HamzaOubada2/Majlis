@@ -15,7 +15,7 @@ export class User {
     password: string;
 
 
-    @Column()
+    @Column({name: 'fullname'})
     fullname:string;
 
 
