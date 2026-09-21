@@ -13,7 +13,7 @@ export class Seminar {
 
 
     @Column({type:'text', nullable: true})
-    description:string;
+    description:string ;
 
 
     @Column({type: 'timestamp'})
@@ -33,6 +33,9 @@ export class Seminar {
 
     @Column({nullable: true})
     scholarId:string;
+
+    @Column()
+    availableSeats:number; //عدد المقاعد المتبقية
 
     @CreateDateColumn()
     createdAt:Date;
