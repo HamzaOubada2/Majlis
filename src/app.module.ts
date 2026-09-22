@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ScholarsModule } from './scholars/scholars.module';
 import { SeminarsModule } from './seminars/seminars.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { AdminModule } from './admin/admin.module';
 
 
 @Module({
@@ -33,7 +34,8 @@ import { ReservationsModule } from './reservations/reservations.module';
     AuthModule,
     ScholarsModule,
     SeminarsModule,
-    ReservationsModule
+    ReservationsModule,
+    AdminModule
   ],
 })
 export class AppModule {}

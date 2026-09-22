@@ -29,10 +29,10 @@ export class Seminar {
     
     @ManyToOne(() => Scholar, {onDelete: 'SET NULL', nullable: true})
     @JoinColumn({name: 'scholarId'})
-    scholar: Scholar;
+    scholar: Scholar | null;
 
     @Column({nullable: true})
-    scholarId:string;
+    scholarId: string | null;
 
     @Column()
     availableSeats:number; //عدد المقاعد المتبقية

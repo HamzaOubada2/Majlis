@@ -29,5 +29,5 @@ export class CreateSeminarDto {
   @ApiPropertyOptional({ example: 'uuid-scholar-id-here', description: 'معرف المحاضر' })
   @IsUUID()
   @IsOptional()
-  scholarId?: string;
+  scholarId?: string | null;
 }

@@ -8,7 +8,15 @@ import {
 } from '@tanstack/react-query';
 import { api, extractErrorMessage } from '@/lib/api';
 import { useI18n } from '@/lib/i18n-provider';
-import type { Reservation, Scholar, Seminar } from '@/lib/types';
+import type {
+  AdminOverview,
+  AdminReservation,
+  Reservation,
+  Scholar,
+  ScholarPayload,
+  Seminar,
+  SeminarPayload,
+} from '@/lib/types';
 import { toast } from 'sonner';
 
 export const QK = {
@@ -16,6 +24,8 @@ export const QK = {
   seminar: (id: string) => ['seminars', id] as const,
   scholars: ['scholars'] as const,
   myReservations: ['my-reservations'] as const,
+  adminOverview: ['admin', 'overview'] as const,
+  adminReservations: ['admin', 'reservations'] as const,
 };
 
 async function getSeminars(): Promise<Seminar[]> {
@@ -107,6 +117,144 @@ export function useCancelReservation() {
       void queryClient.invalidateQueries({ queryKey: QK.myReservations });
       void queryClient.invalidateQueries({ queryKey: QK.seminars });
       void queryClient.invalidateQueries({ queryKey: QK.scholars });
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, t));
+    },
+  });
+}
+
+async function getAdminOverview(): Promise<AdminOverview> {
+  const { data } = await api.get<AdminOverview>('/admin/overview');
+  return data;
+}
+
+async function getAdminReservations(seminarId?: string): Promise<AdminReservation[]> {
+  const { data } = await api.get<AdminReservation[]>('/admin/reservations', {
+    params: seminarId ? { seminarId } : undefined,
+  });
+  return data;
+}
+
+export function useAdminOverview() {
+  return useQuery({ queryKey: QK.adminOverview, queryFn: getAdminOverview });
+}
+
+export function useAdminReservations(seminarId?: string) {
+  return useQuery({
+    queryKey: [...QK.adminReservations, seminarId ?? 'all'],
+    queryFn: () => getAdminReservations(seminarId),
+    refetchInterval: 15_000,
+  });
+}
+
+function invalidateAdmin(queryClient: ReturnType<typeof useQueryClient>) {
+  void queryClient.invalidateQueries({ queryKey: QK.seminars });
+  void queryClient.invalidateQueries({ queryKey: QK.scholars });
+  void queryClient.invalidateQueries({ queryKey: QK.adminOverview });
+  void queryClient.invalidateQueries({ queryKey: QK.adminReservations });
+}
+
+export function useCreateScholar() {
+  const queryClient = useQueryClient();
+  const { t } = useI18n();
+  return useMutation({
+    mutationFn: async (payload: ScholarPayload) => {
+      const { data } = await api.post<Scholar>('/scholars', payload);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success(t('admin.scholarCreated'));
+      invalidateAdmin(queryClient);
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, t));
+    },
+  });
+}
+
+export function useUpdateScholar() {
+  const queryClient = useQueryClient();
+  const { t } = useI18n();
+  return useMutation({
+    mutationFn: async ({ id, payload }: { id: string; payload: ScholarPayload }) => {
+      const { data } = await api.patch<Scholar>(`/scholars/${id}`, payload);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success(t('admin.scholarUpdated'));
+      invalidateAdmin(queryClient);
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, t));
+    },
+  });
+}
+
+export function useDeleteScholar() {
+  const queryClient = useQueryClient();
+  const { t } = useI18n();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/scholars/${id}`);
+    },
+    onSuccess: () => {
+      toast.success(t('admin.scholarDeleted'));
+      invalidateAdmin(queryClient);
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, t));
+    },
+  });
+}
+
+export function useCreateSeminar() {
+  const queryClient = useQueryClient();
+  const { t } = useI18n();
+  return useMutation({
+    mutationFn: async (payload: SeminarPayload) => {
+      const { data } = await api.post<Seminar>('/seminars', payload);
+      return data;
+    },
+    onSuccess: () => {
+      toast.success(t('admin.seminarCreated'));
+      invalidateAdmin(queryClient);
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, t));
+    },
+  });
+}
+
+export function useUpdateSeminar() {
+  const queryClient = useQueryClient();
+  const { t } = useI18n();
+  return useMutation({
+    mutationFn: async ({ id, payload }: { id: string; payload: SeminarPayload }) => {
+      const { data } = await api.patch<Seminar>(`/seminars/${id}`, payload);
+      return data;
+    },
+    onSuccess: (_, { id }) => {
+      toast.success(t('admin.seminarUpdated'));
+      void queryClient.invalidateQueries({ queryKey: QK.seminar(id) });
+      invalidateAdmin(queryClient);
+    },
+    onError: (error) => {
+      toast.error(extractErrorMessage(error, t));
+    },
+  });
+}
+
+export function useDeleteSeminar() {
+  const queryClient = useQueryClient();
+  const { t } = useI18n();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/seminars/${id}`);
+    },
+    onSuccess: () => {
+      toast.success(t('admin.seminarDeleted'));
+      invalidateAdmin(queryClient);
     },
     onError: (error) => {
       toast.error(extractErrorMessage(error, t));

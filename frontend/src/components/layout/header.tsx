@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CalendarDays, GraduationCap, Home, LogOut, Menu, Moon, Sun, User2, X } from 'lucide-react';
+import { CalendarDays, GraduationCap, Home, LayoutDashboard, LogOut, Menu, Moon, Sun, User2, X } from 'lucide-react';
 import { Logo } from '@/components/layout/logo';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/auth-provider';
 import { useI18n } from '@/lib/i18n-provider';
 import { useTheme } from '@/lib/theme-provider';
 import { getUserInitials, getUserName } from '@/lib/format';
+import type { TranslationKey } from '@/lib/translations';
 import { cn } from '@/lib/utils';
 
 const NAV_KEYS = [
@@ -29,6 +30,11 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const navItems: { href: string; label: TranslationKey; icon: typeof Home }[] =
+    user?.role === 'ADMIN'
+      ? [...NAV_KEYS, { href: '/admin', label: 'nav.admin', icon: LayoutDashboard }]
+      : [...NAV_KEYS];
+
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname.startsWith(href);
 
@@ -44,7 +50,7 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 md:flex" aria-label={t('nav.mainAria')}>
-          {NAV_KEYS.map(({ href, label, icon: Icon }) => (
+          {navItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
@@ -109,6 +115,16 @@ export function Header() {
                       <User2 className="h-4 w-4 text-primary" />
                       {t('account.reservations')}
                     </Link>
+                    {user?.role === 'ADMIN' && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors hover:bg-secondary"
+                      >
+                        <LayoutDashboard className="h-4 w-4 text-gold" />
+                        {t('nav.admin')}
+                      </Link>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-destructive transition-colors hover:bg-destructive/10"

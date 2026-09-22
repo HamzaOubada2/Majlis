@@ -23,7 +23,9 @@ export class SeminarsService {
     seminar.availableSeats = seminarData.capacity;
 
     if (scholarId) {
-      seminar.scholar = await this.scholarsService.findOne(scholarId);
+      const scholar = await this.scholarsService.findOne(scholarId);
+      seminar.scholar = scholar;
+      seminar.scholarId = scholar.id;
     }
 
     return await this.seminarRepository.save(seminar);
@@ -60,9 +62,11 @@ export class SeminarsService {
 
   Object.assign(seminar, seminarData);
 
-  if (scholarId) {
-    const scholar = await this.scholarsService.findOne(scholarId);
-    seminar.scholar = scholar;
+  if (scholarId !== undefined) {
+    seminar.scholarId = scholarId ?? null;
+    seminar.scholar = scholarId
+      ? await this.scholarsService.findOne(scholarId)
+      : null;
   }
 
   return await this.seminarRepository.save(seminar);

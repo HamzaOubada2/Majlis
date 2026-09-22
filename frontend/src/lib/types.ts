@@ -6,6 +6,7 @@ export interface Scholar {
   name: string;
   bio: string | null;
   specialization: string | null;
+  avatarUrl?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -31,6 +32,55 @@ export interface Reservation {
   seminar: Seminar;
   status: ReservationStatus;
   createdAt: string;
+}
+
+export interface UserRecord {
+  id: string;
+  email: string;
+  fullname?: string;
+  fullName?: string;
+  role: UserRole;
+}
+
+export interface AdminReservation {
+  id: string;
+  userId: string;
+  seminarId: string;
+  seminar: Seminar;
+  user: UserRecord;
+  status: ReservationStatus;
+  createdAt: string;
+}
+
+export interface AdminOverview {
+  totalUsers: number;
+  totalScholars: number;
+  totalSeminars: number;
+  activeSeminars: number;
+  endedSeminars: number;
+  totalCapacity: number;
+  totalAvailableSeats: number;
+  totalBookedSeats: number;
+  confirmedReservations: number;
+  cancelledReservations: number;
+  totalReservations: number;
+  reservationPercentage: number;
+}
+
+export interface ScholarPayload {
+  name: string;
+  specialization?: string;
+  bio?: string;
+  avatarUrl?: string;
+}
+
+export interface SeminarPayload {
+  title: string;
+  description?: string;
+  eventDate: string;
+  location: string;
+  capacity: number;
+  scholarId?: string | null;
 }
 
 export interface AuthUser {

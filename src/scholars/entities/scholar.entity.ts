@@ -20,6 +20,9 @@ export class Scholar {
   @Column({ nullable: true })
   specialization: string;
 
+  @Column({ type: 'text', nullable: true })
+  avatarUrl: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

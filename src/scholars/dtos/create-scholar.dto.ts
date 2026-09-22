@@ -16,4 +16,9 @@ export class CreateScholarDto {
   @IsString()
   @IsOptional()
   specialization?: string;
+
+  @ApiPropertyOptional({ example: 'https://example.com/avatar.jpg', description: 'رابط صورة المحاضر' })
+  @IsString()
+  @IsOptional()
+  avatarUrl?: string;
 }
