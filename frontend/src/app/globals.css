@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 40 38% 96%;
+    --foreground: 162 47% 10%;
+    --card: 40 35% 99%;
+    --card-foreground: 162 47% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 162 47% 10%;
+    --primary: 162 85% 17%;
+    --primary-foreground: 40 40% 96%;
+    --secondary: 40 30% 91%;
+    --secondary-foreground: 162 47% 12%;
+    --muted: 40 25% 90%;
+    --muted-foreground: 160 12% 44%;
+    --accent: 43 84% 49%;
+    --accent-foreground: 40 40% 96%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 40 40% 96%;
+    --success: 163 72% 36%;
+    --success-foreground: 40 40% 96%;
+    --border: 40 22% 86%;
+    --input: 40 22% 82%;
+    --ring: 162 85% 17%;
+    --radius: 0.85rem;
+    --sand: 40 38% 96%;
+    --sand-deep: 40 25% 90%;
+    --gold: 44 84% 45%;
+    --gold-soft: 43 84% 49%;
+    --gold-foreground: 40 40% 98%;
+    --emerald-deep: 162 85% 14%;
+    --emerald-mid: 162 70% 22%;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: 165 28% 6%;
+    --foreground: 42 30% 94%;
+    --card: 166 24% 9%;
+    --card-foreground: 42 30% 94%;
+    --popover: 166 24% 8%;
+    --popover-foreground: 42 30% 94%;
+    --primary: 162 62% 60%;
+    --primary-foreground: 162 45% 8%;
+    --secondary: 165 20% 14%;
+    --secondary-foreground: 42 25% 92%;
+    --muted: 165 18% 13%;
+    --muted-foreground: 158 12% 66%;
+    --accent: 43 90% 58%;
+    --accent-foreground: 40 50% 8%;
+    --destructive: 0 64% 56%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 163 62% 50%;
+    --success-foreground: 162 50% 6%;
+    --border: 165 18% 16%;
+    --input: 165 18% 18%;
+    --ring: 162 62% 60%;
+    --sand: 165 26% 7%;
+    --sand-deep: 165 20% 13%;
+    --gold: 43 90% 58%;
+    --gold-soft: 43 84% 49%;
+    --gold-foreground: 40 50% 8%;
+    --emerald-deep: 162 85% 14%;
+    --emerald-mid: 162 70% 22%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.9);
+    color: hsl(var(--primary-foreground));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-gradient-emerald {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--emerald-deep)),
+      hsl(var(--emerald-mid)) 55%,
+      hsl(var(--gold))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-mesh {
+    background-image:
+      radial-gradient(at 12% 8%, hsl(162 85% 17% / 0.14) 0px, transparent 50%),
+      radial-gradient(at 85% 12%, hsl(44 84% 45% / 0.18) 0px, transparent 45%),
+      radial-gradient(at 70% 85%, hsl(162 70% 22% / 0.1) 0px, transparent 55%),
+      radial-gradient(at 20% 90%, hsl(40 38% 90% / 0.6) 0px, transparent 50%);
+  }
+
+  .dark .bg-mesh {
+    background-image:
+      radial-gradient(at 12% 8%, hsl(162 60% 60% / 0.16) 0px, transparent 50%),
+      radial-gradient(at 85% 12%, hsl(43 90% 58% / 0.14) 0px, transparent 45%),
+      radial-gradient(at 70% 85%, hsl(162 70% 22% / 0.2) 0px, transparent 55%),
+      radial-gradient(at 20% 90%, hsl(165 28% 14% / 0.6) 0px, transparent 50%);
+  }
+
+  .pattern-arch {
+    background-image: radial-gradient(
+      hsl(var(--primary) / 0.14) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-emerald-900/10;
+  }
+}
+
+/* Hide number input spinners for countdown */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

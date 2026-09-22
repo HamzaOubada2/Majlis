@@ -34,12 +34,21 @@ export class ReservationsService {
             }
 
             // التحقق مما إذا كان المستخدم قد حجز هذه الندوة سابقاً
-            const exitingReservation = await queryRunner.manager.findOne(Reservation, {
-                where: {userId, seminarId, status: ReservationStatus.CONFIRMED}
+            const existingReservation = await queryRunner.manager.findOne(Reservation, {
+                where: { userId, seminarId },
             })
 
+            // إعادة تفعيل حجز ملغى بدلاً من إنشاء سجل مكرر (لتفادي قيد UNIQUE)
+            if (existingReservation && existingReservation.status === ReservationStatus.CANCELLED) {
+                existingReservation.status = ReservationStatus.CONFIRMED;
+                const savedReservation = await queryRunner.manager.save(existingReservation);
 
-            if(exitingReservation) {
+                await queryRunner.manager.decrement(Seminar, { id: seminarId }, 'availableSeats', 1);
+                await queryRunner.commitTransaction();
+                return savedReservation;
+            }
+
+            if (existingReservation) {
                 throw new ConflictException('لقد قمت بحجز هذه الندوة بالفعل سابقاً')
             }
 
