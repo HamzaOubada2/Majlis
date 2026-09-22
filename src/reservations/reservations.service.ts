@@ -52,9 +52,11 @@ export class ReservationsService {
             // حفظ الحجز
             const savedReservation = await queryRunner.manager.save(reservation);
 
-            // إنقاص عدد المقاعد المتاحة بـ 1
-            seminar.availableSeats -= 1;
-            await queryRunner.manager.save(seminar);
+            // إنقاص عدد المقاعد المتاحة بـ 1 بشكل مباشر في قاعدة البيانات
+            await queryRunner.manager.decrement(Seminar, { id: seminarId }, 'availableSeats', 1);
+
+            // تأكيد وحفظ المعاملة نهائياً في قاعدة البيانات
+            await queryRunner.commitTransaction();
 
             return savedReservation;
         } catch(err) {
@@ -89,16 +91,8 @@ export class ReservationsService {
             reservation.status = ReservationStatus.CANCELLED;
             await queryRunner.manager.save(reservation);
 
-            // استرجاع المقعد للندوة
-            const seminar = await queryRunner.manager.findOne(Seminar, {
-                where: {id:reservation.seminarId},
-                lock: {mode: 'pessimistic_write'}
-            })
-
-            if(seminar) {
-                seminar.availableSeats += 1;
-                await queryRunner.manager.save(seminar);
-            }
+            // استرجاع المقعد للندوة بزيادة حتمية مباشرة
+            await queryRunner.manager.increment(Seminar, { id: reservation.seminarId }, 'availableSeats', 1);
 
             await queryRunner.commitTransaction();
         }catch(err) {

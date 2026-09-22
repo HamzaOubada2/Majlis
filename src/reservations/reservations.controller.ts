@@ -15,22 +15,22 @@ export class ReservationsController {
     @ApiOperation({summary: 'Reserve a seat at a seminar (Token required)'})
     @Post()
     async create(@Req() req: any, @Body() createReservationDto: CreateReservationDto) {
-        const userId = req.user.sub;
+        const userId = req.user?.id || req.user?.sub || req.user?.userId;
         return this.reservationsService.createReservation(userId, createReservationDto.seminarId)
     }
 
     @ApiOperation({summary: 'View current users bookings'})
     @Get('my-reservations')
     async getMyReservations(@Req() req: any) {
-        const userId = req.user.sub;
+        const userId = req.user?.id || req.user?.sub || req.user?.userId;
         return this.reservationsService.getUserReservations(userId);
-    }
+}
 
 
     @ApiOperation({summary: 'Cancel previous reservation'})
     @Delete(':id')
     async cancel(@Req() req:any, @Param('id') id:string) {
-        const userId = req.user.sub;
+        const userId = req.user?.id || req.user?.sub || req.user?.userId;
         await this.reservationsService.cancelReservation(userId, id);
         return { message: 'تم إلغاء الحجز بنجاح وإعادة المقعد المتاح' };    
     }
