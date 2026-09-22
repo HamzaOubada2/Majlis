@@ -4,11 +4,13 @@ import { SeminarsService } from './seminars.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Seminar } from './entities/seminar.entity';
 import { ScholarsModule } from '../scholars/scholars.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Seminar]),
-    ScholarsModule
+    ScholarsModule,
+    AuthModule
   ],
   controllers: [SeminarsController],
   providers: [SeminarsService],
