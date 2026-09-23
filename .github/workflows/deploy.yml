@@ -2,7 +2,7 @@ name: CI/CD Build and Push
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ['main', 'master']
 
 jobs:
   build-and-push:
@@ -24,3 +24,7 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/majlis-backend:latest
+      - name: Trigger Render Deploy Hook
+        if: success()
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

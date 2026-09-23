@@ -7,6 +7,7 @@ import { ScholarsModule } from './scholars/scholars.module';
 import { SeminarsModule } from './seminars/seminars.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { AdminModule } from './admin/admin.module';
+import { HealthModule } from './health/health.module';
 
 
 @Module({
@@ -35,7 +36,8 @@ import { AdminModule } from './admin/admin.module';
     ScholarsModule,
     SeminarsModule,
     ReservationsModule,
-    AdminModule
+    AdminModule,
+    HealthModule
   ],
 })
 export class AppModule {}
