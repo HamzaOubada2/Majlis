@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
+  const x:number = "error";
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
