@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # 1. خدمة قاعدة البيانات PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: majlis_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: majlis_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - majlis_network
+
+  # 2. خدمة تطبيق NestJS Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: majlis_app
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgrespassword
+      DB_NAME: majlis_db
+      JWT_SECRET: supersecretkey_majlis_2026
+    depends_on:
+      - postgres
+    networks:
+      - majlis_network
+
+# شبكة معزولة للربط بين السيرفر والداتابيز
+networks:
+  majlis_network:
+    driver: bridge
+
+# وحفظ البيانات لضمان عدم ضياعها عند إيقاف الحاويات
+volumes:
+  postgres_data:
